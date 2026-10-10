@@ -40,13 +40,13 @@ const ASSIGN = /\b([A-Z0-9_]*(?:SECRET|TOKEN|PASSWORD|PASSWD|PRIVATE_KEY|SERVICE
 const PLACEHOLDER = /^(your|xxx|change|example|placeholder|dummy|test|<|\$\{|\$[A-Z_]|process\.env|import\.meta|env\(|\*{3})/i;
 const JWT = /eyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}/g;
 
-const mask = (s) => s.slice(0, 6) + '…';
+// لا نطبع أي جزء من قيمة المفتاح أبداً: اسم الملف ورقم السطر ونوع المشكلة فقط
 const findings = [];
-const add = (file, line, why, sample) => findings.push({ file, line, why, sample });
+const add = (file, line, why) => findings.push({ file, line, why });
 
 for (const file of files) {
   const blocked = BLOCKED_FILES.find((b) => b.re.test(file));
-  if (blocked) { add(file, 0, blocked.why, ''); continue; }
+  if (blocked) { add(file, 0, blocked.why); continue; }
 
   let buf;
   try { buf = mode === 'all' ? fs.readFileSync(file) : git(['show', `:${file}`], true); } catch { continue; }
@@ -56,27 +56,27 @@ for (const file of files) {
     if (text.includes('secret-scan:allow')) return;
     const line = i + 1;
     for (const r of RULES) {
-      const m = text.match(r.re);
-      if (m) add(file, line, r.why, mask(m[0]));
+      if (r.re.test(text)) add(file, line, r.why);
     }
     for (const m of text.matchAll(JWT)) {
       try {
         const payload = JSON.parse(Buffer.from(m[0].split('.')[1], 'base64url').toString('utf8'));
-        if (payload.role && payload.role !== 'anon') add(file, line, `رمز JWT بصلاحية «${payload.role}» (سري)`, mask(m[0]));
+        if (payload.role === 'service_role') add(file, line, 'مفتاح Supabase بصلاحيات كاملة (service_role)');
+        else if (payload.role && payload.role !== 'anon') add(file, line, 'رمز دخول (JWT) سري');
       } catch { /* ليس JWT حقيقياً */ }
     }
     for (const m of text.matchAll(ASSIGN)) {
       const [, name, value] = m;
       if (PLACEHOLDER.test(value)) continue;
       if (/^NEXT_PUBLIC_/.test(name) && !/SECRET|SERVICE_ROLE|PRIVATE|PASSWORD/.test(name)) continue;
-      add(file, line, `قيمة سرية في المتغير ${name}`, mask(value));
+      add(file, line, `قيمة سرية في المتغير ${name}`);
     }
   });
 }
 
 if (findings.length) {
   console.error('\n✗ فحص الأسرار: تم إيقاف العملية لوجود مفاتيح أو ملفات سرية:\n');
-  for (const f of findings) console.error(`  - ${f.file}${f.line ? ':' + f.line : ''} — ${f.why}${f.sample ? ` (${f.sample})` : ''}`);
+  for (const f of findings) console.error(`  - ${f.file}${f.line ? ':' + f.line : ''} — ${f.why}`);
   console.error('\nالحل: احذف المفتاح من الملف وضعه في .env.local (لا يُرفع) أو في إعدادات Netlify.');
   console.error('إذا كان المفتاح قد رُفع سابقاً إلى GitHub فاعتبره مكشوفاً وأنشئ مفتاحاً جديداً من لوحة الخدمة.\n');
   process.exit(1);

@@ -1,0 +1,30 @@
+# إعدادات Netlify — تُقرأ تلقائياً عند ربط المستودع بموقع على Netlify (لم يُربط بعد).
+# يُكمَّل في لوحة Netlify بهذه الإعدادات (لا يمكن ضبطها من هذا الملف):
+#   - Production branch: main            ← الفرع الوحيد الذي يُنشر رسمياً
+#   - Branch deploys: develop فقط        ← رابط معاينة منفصل: develop--<اسم-الموقع>.netlify.app
+#   - لا يُربط الدومين card-shop.net قبل الإطلاق وبموافقة صاحب المشروع
+# التفاصيل: docs/workflow.md ← «بيئة المعاينة»
+
+[build]
+  publish = "."
+  # حارس النشر: يمنع الفهرسة ويمنع خلط موارد الإنتاج بالمعاينة (tools/deploy-guard.js)
+  command = "node tools/deploy-guard.js ."
+
+[build.environment]
+  NODE_VERSION = "20"
+  # معرّفات علنية لموارد الإنتاج (رقم مشروع Supabase الرسمي، مفتاح مشروع PostHog الرسمي...)
+  # تُضاف عند إنشاء موارد الإنتاج، مفصولة بفواصل. ليست مفاتيح سرية.
+  CS_PROD_FINGERPRINTS = ""
+
+[context.production.environment]
+  CS_ENV = "production"
+  # يبقى "false" حتى يوم الإطلاق الرسمي
+  CS_ALLOW_INDEXING = "false"
+
+[context.deploy-preview.environment]
+  CS_ENV = "preview"
+  CS_ALLOW_INDEXING = "false"
+
+[context.branch-deploy.environment]
+  CS_ENV = "preview"
+  CS_ALLOW_INDEXING = "false"
