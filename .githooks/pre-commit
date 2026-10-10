@@ -1,0 +1,7 @@
+#!/bin/sh
+# يعمل تلقائياً قبل كل حفظ (commit): يمنع حفظ أي مفتاح سري.
+if ! command -v node >/dev/null 2>&1; then
+  echo "✗ فحص الأسرار يحتاج Node.js. ثبّته ثم أعد المحاولة." >&2
+  exit 1
+fi
+exec node tools/check-secrets.js --staged

@@ -1,0 +1,21 @@
+#!/bin/sh
+# يعمل تلقائياً قبل كل رفع (push):
+# 1) يمنع الرفع إلى الفرع الرسمي main — لأن main = الموقع الرسمي بعد ربط Netlify.
+#    الرفع إلى main يحتاج موافقة صاحب المشروع، ويتم هكذا:  CS_ALLOW_MAIN_PUSH=1 git push origin main
+# 2) يمنع حذف وسوم النسخ الاحتياطية (v*) من GitHub.
+zero=0000000000000000000000000000000000000000
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [ "$remote_ref" = "refs/heads/main" ] && [ "$CS_ALLOW_MAIN_PUSH" != "1" ]; then
+    echo "✗ الرفع إلى الفرع الرسمي main ممنوع دون موافقة صاحب المشروع." >&2
+    echo "  اعمل على فرع develop، وسيُنقل إلى main عند الموافقة على النشر." >&2
+    exit 1
+  fi
+  case "$remote_ref" in
+    refs/tags/v*)
+      if [ "$local_sha" = "$zero" ]; then
+        echo "✗ حذف وسم النسخة الاحتياطية ${remote_ref#refs/tags/} من GitHub ممنوع." >&2
+        exit 1
+      fi ;;
+  esac
+done
+exit 0

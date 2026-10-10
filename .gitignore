@@ -1,5 +1,28 @@
-.claude/
+# ===== أسرار ومفاتيح — لا تُرفع أبداً =====
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+service-account*.json
+
+# ===== ملفات تُبنى أو تُنزَّل تلقائياً =====
 node_modules/
+.next/
+out/
+.netlify/
+supabase/.temp/
+coverage/
+playwright-report/
+test-results/
+*.log
+
+# ===== ملفات محلية على هذا الجهاز =====
+.claude/
 Thumbs.db
 desktop.ini
 .DS_Store
