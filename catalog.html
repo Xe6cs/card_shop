@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>كل المنتجات | Card Shop</title>
+  <meta name="description" content="تصفح بطاقات الألعاب والمتاجر الرقمية وشحن الرصيد والإنترنت مع فلاتر حسب العلامة ومنطقة الحساب والسعر والتوفر.">
+  <link rel="canonical" href="https://www.card-shop.net/catalog.html">
+  <meta name="theme-color" content="#0a6fd8">
+  <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <script>try{var t=localStorage.getItem('cs-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+  <script src="assets/js/data.js" defer></script>
+  <script src="assets/js/core.js" defer></script>
+  <script src="assets/js/catalog.js" defer></script>
+</head>
+<body data-page="catalog">
+  <a class="skip-link" href="#results-title">تخطَّ إلى النتائج</a>
+  <header id="site-header" class="site-header">
+    <div class="container"><div class="hdr"><a class="brand" href="index.html"><img class="mark" src="assets/img/logo-mark.webp" width="42" height="42" alt="Card Shop"></a></div></div>
+  </header>
+
+  <main id="main">
+    <div class="container">
+      <nav class="crumbs" aria-label="مسار التنقل" id="crumbs"></nav>
+      <div class="page-head" id="page-head"></div>
+      <div class="catalog">
+        <aside class="filters-panel" aria-label="تصفية النتائج" id="filters-desktop"></aside>
+        <section class="catalog-main" aria-labelledby="results-title">
+          <h2 class="sr-only" id="results-title" tabindex="-1">النتائج</h2>
+          <div class="toolbar" id="toolbar"></div>
+          <div class="active-filters" id="active-filters" hidden></div>
+          <p class="sr-only" aria-live="polite" id="live-count"></p>
+          <div id="results"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <dialog class="sheet" id="filters-sheet" aria-labelledby="sheet-title">
+    <div class="sheet-head">
+      <h2 id="sheet-title">تصفية النتائج</h2>
+      <button class="icon-btn" type="button" data-close-sheet aria-label="إغلاق">
+        <svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="sheet-body" id="filters-mobile"></div>
+    <div class="sheet-foot">
+      <button class="btn btn-outline" type="button" data-clear-all>مسح الكل</button>
+      <button class="btn btn-primary btn-block" type="button" data-close-sheet id="sheet-apply">عرض النتائج</button>
+    </div>
+  </dialog>
+
+  <footer id="site-footer"></footer>
+</body>
+</html>
